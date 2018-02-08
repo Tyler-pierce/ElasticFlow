@@ -18,7 +18,20 @@ defmodule ElasticFlow.Distribution.Servers do
   	  	node_name = Atom.to_string(node())
 
   	  	String.to_atom("sender_#{node_name}")
-  	  {_, sname} ->
+  	  :master ->
+  	  	servers = Application.get_env(:elastic_flow, :servers)
+
+  	  	{master_name, _} = Enum.reduce(servers, fn {node_name, type}, master_node ->
+  	  	  case type do
+  	  	  	:master ->
+  	  	  	  node_name
+  	  	  	_ ->
+  	  	  	  master_node
+  	  	  end
+  	  	end)
+
+  	  	String.to_atom("sender_#{master_name}")
+  	  sname ->
   	  	String.to_atom("sender_#{sname}")
   	end
   end
@@ -38,6 +51,19 @@ defmodule ElasticFlow.Distribution.Servers do
   	  	node_name = Atom.to_string(node())
 
   	  	String.to_atom("receiver_#{node_name}")
+  	  :master ->
+  	  	servers = Application.get_env(:elastic_flow, :servers)
+
+  	  	{master_name, _} = Enum.reduce(servers, fn {node_name, type}, master_node ->
+  	  	  case type do
+  	  	  	:master ->
+  	  	  	  node_name
+  	  	  	_ ->
+  	  	  	  master_node
+  	  	  end
+  	  	end)
+
+  	  	String.to_atom("receiver_#{master_name}")
   	  sname ->
   	  	String.to_atom("receiver_#{sname}")
   	end

@@ -28,7 +28,8 @@ config :elastic_flow,
 	:"yam3@baggy-the-cat" => :slave
   },
   task: {ElasticFlow.Example, :count_words},
-  aggregator: {ElasticFlow.Example, :aggregate}
+  aggregator: {ElasticFlow.Example, :aggregate}, # Optional
+  compress: false
 
 
 # It is also possible to import configuration files, relative to this

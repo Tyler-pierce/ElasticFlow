@@ -15,7 +15,7 @@ defmodule ElasticFlow.Mixfile do
   def application do
     [
       extra_applications: [:logger],
-      env: [node_index: 0, servers: []],
+      env: [],
       mod: {ElasticFlow.Application, []}
     ]
   end

@@ -5,7 +5,7 @@ defmodule ElasticFlow.Aggregator do
 
   use GenServer
 
-  #alias ElasticFlow.Parcel
+  alias ElasticFlow.Aggregation.Protocol, as: AggregationProtocol
 
 
   @doc """
@@ -32,7 +32,7 @@ defmodule ElasticFlow.Aggregator do
   end
 
   def handle_cast({:merge_processed_result, result, receipt}, %{results: results, receipts: receipts}) do
-    {aggregator_module, aggregator_function} = Application.get_env(:elastic_flow, :aggregator, {ElasticFlow.Aggregator, :aggregate})
+    {aggregator_module, aggregator_function} = Application.get_env(:elastic_flow, :aggregator, {AggregationProtocol, :aggregate})
 
     merged_results = apply(aggregator_module, aggregator_function, [result, results])
 
@@ -40,19 +40,4 @@ defmodule ElasticFlow.Aggregator do
   end
 
   def handle_info(_, state), do: {:noreply, state}
-
-  # TODO: move to aggregation module
-  def aggregate(result, nil) do
-    aggregate(result, %{})
-  end
-
-  def aggregate(result, previous_results) do
-    result_map = Enum.reduce(result, %{}, fn {word, count}, acc -> 
-      Map.put_new(acc, word, count)
-    end)
-
-    Map.merge(result_map, previous_results, fn _key, count1, count2 ->
-      count1 + count2
-    end)
-  end
 end

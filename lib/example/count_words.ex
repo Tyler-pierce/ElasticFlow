@@ -4,11 +4,23 @@ defmodule ElasticFlow.Example do
   Follow the instructions from the README to setup and try it out.  Estimated time: 5 minutes.
   """
 
+  # Run setup separately first
+  def run(file_name \\ "lib/example/data/essay.txt") do
+  	alias ElasticFlow, as: ES
+
+  	IO.inspect "Opening stream #{file_name} and adding step."
+  	file = File.stream!(file_name)
+
+  	ES.create_step(file) |> ES.add_step()
+  end
+
   @doc """
   A simple out of place utility to connect to other local nodes and simulate a distributed system.
   Helpful for running the example quickly
   """
   def setup() do
+  	IO.inspect "Connecting to nodes."
+
   	# Connect master with all slaves.  Will share info with slaves automatically
   	for key <- Map.keys(Application.get_env(:elastic_flow, :servers)) do
   	  case Map.get(Application.get_env(:elastic_flow, :servers), key) do
@@ -38,6 +50,10 @@ defmodule ElasticFlow.Example do
   @doc """
   The programs aggregation method, configured to be run against incoming results
   """
+  def aggregate(result, nil) do
+    aggregate(result, %{})
+  end
+
   def aggregate(result, previous_results) do
     result_map = Enum.reduce(result, %{}, fn {word, count}, acc -> 
       Map.put_new(acc, word, count)

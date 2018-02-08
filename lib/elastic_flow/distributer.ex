@@ -39,7 +39,7 @@ defmodule ElasticFlow.Distributer do
 
   	_ = GenServer.cast(
   	  {:global, DistributionServers.get_sender_name_for_server()}, 
-  	  {:compress_and_send_parcel, labeled_parcel, next_server}
+  	  {:send_parcel_to_worker, labeled_parcel, next_server}
   	)
 
   	# Add to unanswered receipt count and cycle the server to the back of the order.

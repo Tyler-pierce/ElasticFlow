@@ -53,7 +53,7 @@ defmodule ElasticFlow.Distribution.Packaging do
   def compress_payload(%Parcel{payload: payload} = parcel) do
   	case Msgpax.pack(payload) do
   	  {:ok, packed_payload} ->
-  	  	%{parcel | :compressed => packed_payload}
+  	  	%{parcel | :compressed => packed_payload |> :zlib.compress()}
   	  {:error, %Msgpax.PackError{reason: _reason}} ->
   	    parcel
   	end
@@ -68,10 +68,12 @@ defmodule ElasticFlow.Distribution.Packaging do
     "foo"
   """
   def uncompress_payload(compressed_payload) do
-  	case Msgpax.unpack(compressed_payload) do
-  	  {:ok, payload} ->
-  	  	payload
-  	  {:error, %Msgpax.PackError{reason: _reason}} ->
+  	payload = :zlib.uncompress(compressed_payload)
+
+  	case Msgpax.unpack(payload) do
+  	  {:ok, unpacked_payload} ->
+  	  	unpacked_payload
+  	  {:error, %Msgpax.UnpackError{reason: _reason}} ->
   	  	nil
   	end
   end
