@@ -29,7 +29,8 @@ config :elastic_flow,
   },
   task: {ElasticFlow.Example, :count_words},
   aggregator: {ElasticFlow.Example, :aggregate}, # Optional
-  compress: false
+  intercept: ElasticFlow.ExampleInterceptor, # Optional
+  compress: false # Optional
 
 
 # It is also possible to import configuration files, relative to this

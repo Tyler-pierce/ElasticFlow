@@ -42,6 +42,12 @@ defmodule ElasticFlow.Sender do
       {:receive_new_parcel, payload_send, receipt}
     )
 
+    _ = apply(
+      Application.get_env(:elastic_flow, :intercept, ElasticFlow.Interceptor), 
+      :send, 
+      [node(), receiving_server, :receive_new_parcel, receipt]
+    )
+
     {:noreply, %{receipts | :to_worker => [receipt|worker_receipts]}}
   end
 
@@ -59,6 +65,12 @@ defmodule ElasticFlow.Sender do
     _ = GenServer.cast(
       {:global, DistributionServers.get_receiver_name_for_server(:master)}, 
       {:receive_return_parcel, payload_send, receipt}
+    )
+
+    _ = apply(
+      Application.get_env(:elastic_flow, :intercept, ElasticFlow.Interceptor), 
+      :send, 
+      [node(), :master, :receive_return_parcel, receipt]
     )
 
     {:noreply, %{receipts | :to_master => [receipt|master_receipts]}}

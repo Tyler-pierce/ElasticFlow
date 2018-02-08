@@ -36,6 +36,12 @@ defmodule ElasticFlow.Aggregator do
 
     merged_results = apply(aggregator_module, aggregator_function, [result, results])
 
+    _ = apply(
+      Application.get_env(:elastic_flow, :intercept, ElasticFlow.Interceptor), 
+      :aggregated, 
+      [receipt]
+    )
+
     {:noreply, %{results: merged_results, receipts: [receipt|receipts]}}
   end
 

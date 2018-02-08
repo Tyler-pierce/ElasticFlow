@@ -33,6 +33,20 @@ defmodule ElasticFlow.Example do
   end
 
   @doc """
+  Retrieve the aggregated results of the example
+  """
+  def results() do
+  	ElasticFlow.Aggregator.retrieve_results()
+  end
+
+  @doc """
+  Custom distribut window to force more distribution for the small essay example data
+  """
+  def get_window() do
+    Flow.Window.global() |> Flow.Window.trigger_every(2)
+  end
+
+  @doc """
   Word counting flow. Set your config to use this as a task
   """
   def count_words(enumerable) do

@@ -44,6 +44,12 @@ defmodule ElasticFlow.Receiver do
       {:send_parcel_to_master, %Parcel{receipt: receipt, payload: result, timestamp:  Timex.to_unix(Timex.now)}}
     )
 
+    _ = apply(
+      Application.get_env(:elastic_flow, :intercept, ElasticFlow.Interceptor), 
+      :receive, 
+      [node(), node(), :send_parcel_to_master, receipt]
+    )
+
     {:noreply, %{receipts | :from_master => [receipt|master_receipts]}}
   end
 
@@ -57,6 +63,12 @@ defmodule ElasticFlow.Receiver do
     _ = GenServer.cast(
       {:global, :aggregator},
       {:merge_processed_result, payload, receipt}
+    )
+
+    _ = apply(
+      Application.get_env(:elastic_flow, :intercept, ElasticFlow.Interceptor), 
+      :receive, 
+      [node(), :aggregator, :merge_processed_result, receipt]
     )
 
     {:noreply, %{receipts | :from_worker => [receipt|worker_receipts]}}

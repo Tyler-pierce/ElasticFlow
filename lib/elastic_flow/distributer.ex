@@ -42,6 +42,12 @@ defmodule ElasticFlow.Distributer do
   	  {:send_parcel_to_worker, labeled_parcel, next_server}
   	)
 
+  	 _ = apply(
+      Application.get_env(:elastic_flow, :intercept, ElasticFlow.Interceptor), 
+      :distributed, 
+      [labeled_parcel.receipt]
+    )
+
   	# Add to unanswered receipt count and cycle the server to the back of the order.
     {:reply, state, %{
       receipts: [labeled_parcel.receipt|receipts],
