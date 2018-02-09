@@ -31,7 +31,7 @@ config :elastic_flow,
   aggregator: {ElasticFlow.Example, :aggregate}, # Optional
   intercept: ElasticFlow.ExampleInterceptor, # Optional
   distribute_window: {ElasticFlow.Example, :get_window}, # Optional, used in example to force more distribution
-  compress: false # Optional
+  compress: false # Optional, can't work for example since tuples are used
 
 
 # It is also possible to import configuration files, relative to this
