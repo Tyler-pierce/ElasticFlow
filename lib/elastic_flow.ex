@@ -26,7 +26,9 @@ defmodule ElasticFlow do
 
   Step 1: Clone the repository from github <https://github.com/Tyler-pierce/ElasticFlow.git>
 
+    ```
     terminal 1> mix deps.get
+    ```
 
   Step 2: Change the options in config/config.exs to use your computer name for the servers. The rest of the options are defaulted
   to use the word counting app.
@@ -42,16 +44,25 @@ defmodule ElasticFlow do
 
   Step 3: Now make sure you have 3 console windows/tabs open, and you can start your 3 'servers'
   
+    ```
     terminal 1> iex --sname yam1 --cookie yamrider -S mix run
+    ```
+    ```
     terminal 2> iex --sname yam2 --cookie yamrider -S mix run
+    ```
+    ```
     terminal 3> iex --sname yam3 --cookie yamrider -S mix run
+    ```
 
   Step 4: Run the convenience function to connect the servers (in production you'd have your cluster setup by your deployment or vm.args) and
   then run the program.
 
+    ```
     iex(yam1@your-computer-name)1> ElasticFlow.Example.setup()
-
+    ```
+    ```
     iex(yam1@your-computer-name)1> ElasticFlow.Example.run()
+    ```
 
     # You should see a lot of output because of the example apps custom interceptor.  Check the other tabs and you should see yam2
     and yam3 have received and sent data (and left receipts behind).  Feel free to take the interceptor out of the config to 
@@ -59,9 +70,11 @@ defmodule ElasticFlow do
 
   Step 5: Check your results!
 
+    ```
     iex(yam1@your-computer-name)1> ElasticFlow.Example.results()
 
       %{"first" => 7, "whole" => 14, ... }
+    ```
 
   And that's it.  Have a look through the example folder code. I'll continue to update it as features progress so each integration point
   is obvious.
