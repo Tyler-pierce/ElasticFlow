@@ -41,9 +41,11 @@ defmodule ElasticFlow.Example do
 
   @doc """
   Custom distribut window to force more distribution for the small essay example data
+
+  Since distribute uses each_state, resetting is necessary to avoid sending duplicate data.
   """
   def get_window() do
-    Flow.Window.global() |> Flow.Window.trigger_every(2)
+    Flow.Window.global() |> Flow.Window.trigger_every(3, :reset)
   end
 
   @doc """

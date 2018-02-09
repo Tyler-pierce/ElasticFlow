@@ -2,15 +2,15 @@
 
 Computational distributable flows with stages.
 
-Inspired by (and for) José Valim's Flow, Spark, and Amazon's EMR.  Elastic Flow provides the structure to distribute an
+Inspired by Flow, Spark, and Amazon's EMR.  Elastic Flow provides the structure to distribute an
 enumerable data source to a cluster of servers and then aggregate into a result as data completes processing.
 
-With Elastic Flow you create a Flow based program as normal; you'd then set your module in Elastics config along with
+With Elastic Flow you create a Flow based program as normal; you'd then set your module in EF's config along with
 your master/slave setup.  Work will then be distributed from master to your cluster to each server which are all running
 the same program on each server, as a single BEAM app.  As work is completed the results are sent back to master to 
 be aggregated.  There are default aggregation methods but the common usage will be to define your own aggregate method.
 
-This is currently in the working proof of concept stage.  It fulfilled the author's use case and as tested more will be expanded.
+This is currently in the working proof of concept stage.  It fulfilled the author's (my) use case and as tested more is likely to be expanded on.
 There is included an example that can be run from within the library locally to simulate a distributed system, which is a great way
 to get a feel for the BEAM and Elastic Flow.
 

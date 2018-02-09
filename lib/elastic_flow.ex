@@ -2,15 +2,16 @@ defmodule ElasticFlow do
   @moduledoc ~S"""
   Computational distributable flows with stages.
 
-  Inspired by (and for) José Valim's Flow, Spark, and Amazon's EMR.  Elastic Flow provides the structure to distribute an
+  Inspired by Flow, Spark, and Amazon's EMR.  Elastic Flow provides a conceptual structure for distributing an
   enumerable data source to a cluster of servers and then aggregate into a result as data completes processing.
 
   With Elastic Flow you create a Flow based program as normal; you'd then set your module in Elastics config along with
   your master/slave setup.  Work will then be distributed from master to your cluster to each server which are all running
   the same program on each server, as a single BEAM app.  As work is completed the results are sent back to master to 
-  be aggregated.  There are default aggregation methods but the common usage will be to define your own aggregate method.
+  be aggregated.  There are default aggregation methods but the common usage will be to define your own aggregate method.  By 
+  defining an intercept module, actions can be viewed as they happen.
 
-  This is currently in the working proof of concept stage.  It fulfilled the author's use case and as tested more will be expanded.
+  This is currently in the working proof of concept stage.  It fulfilled the author's (my) use case and as tested more will be expanded.
   There is included an example that can be run from within the library locally to simulate a distributed system, which is a great way
   to get a feel for the BEAM and Elastic Flow.
 
@@ -116,7 +117,7 @@ defmodule ElasticFlow do
         get_distribute_window()
     end
 
-    options_with_defaults = Keyword.merge(options, [stages: get_server_count(), window: window])
+    options_with_defaults = Keyword.merge(options, [stages: 1, window: window])
 
     Flow.partition(flow, options_with_defaults)
       |> Flow.reduce(fn -> [] end, fn item, acc ->         
@@ -129,7 +130,7 @@ defmodule ElasticFlow do
   end
 
   defp get_distribute_window() do
-    Flow.Window.global() |> Flow.Window.trigger_every(5000)
+    Flow.Window.global() |> Flow.Window.trigger_every(3000, :reset)
   end
 
   defp get_server_count() do

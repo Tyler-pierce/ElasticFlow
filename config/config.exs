@@ -30,6 +30,7 @@ config :elastic_flow,
   task: {ElasticFlow.Example, :count_words},
   aggregator: {ElasticFlow.Example, :aggregate}, # Optional
   intercept: ElasticFlow.ExampleInterceptor, # Optional
+  distribute_window: {ElasticFlow.Example, :get_window}, # Optional, used in example to force more distribution
   compress: false # Optional
 
 
