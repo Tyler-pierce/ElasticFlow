@@ -31,12 +31,14 @@ defmodule ElasticFlow do
   Step 2: Change the options in config/config.exs to use your computer name for the servers. The rest of the options are defaulted
   to use the word counting app.
 
+    ```
     config :elastic_flow, 
       servers: %{
         :"yam1@your-computer-name" => :master, 
         :"yam2@your-computer-name" => :slave, 
         :"yam3@your-computer-name" => :slave
       }
+    ```
 
   Step 3: Now make sure you have 3 console windows/tabs open, and you can start your 3 'servers'
   
@@ -117,7 +119,7 @@ defmodule ElasticFlow do
         get_distribute_window()
     end
 
-    options_with_defaults = Keyword.merge(options, [stages: 1, window: window])
+    options_with_defaults = Keyword.merge(options, [stages: get_server_count(), window: window])
 
     Flow.partition(flow, options_with_defaults)
       |> Flow.reduce(fn -> [] end, fn item, acc ->         
