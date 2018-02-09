@@ -1,8 +1,5 @@
 defprotocol ElasticFlow.Aggregation.Protocol do
-  @moduledoc """
-  Interface for default aggregation functions, used when a library user does not provide an
-  aggregation method of their own.
-  """
+  @moduledoc false
 
   @doc """
   Aggregate a new data chunk with the already aggregated data.

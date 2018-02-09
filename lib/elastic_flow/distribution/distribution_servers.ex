@@ -1,7 +1,5 @@
 defmodule ElasticFlow.Distribution.Servers do
-  @moduledoc """
-  Handles the logic governing distribution of payloads to and from ElasticFlow processes
-  """
+  @moduledoc false
 
   @doc """
   Returns the process name that is given by default to supervised senders.  If called with no argument,

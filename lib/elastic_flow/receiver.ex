@@ -1,18 +1,12 @@
 defmodule ElasticFlow.Receiver do
-  @moduledoc """
-  A receiving service that accepts parcels or compressed data and triggers the local flow process
-  """
+  @moduledoc false
 
   use GenServer
 
   alias ElasticFlow.Parcel
   alias ElasticFlow.Distribution.Packaging, as: DistributionPackaging
   alias ElasticFlow.Distribution.Servers, as: DistributionServers
-
-
-  @doc """
-  Start with a new empty activity bucket
-  """
+  
   def start_link(name) do
     GenServer.start_link(__MODULE__, :ok, name: {:global, name})
   end
@@ -61,7 +55,7 @@ defmodule ElasticFlow.Receiver do
     end
 
     _ = GenServer.cast(
-      {:global, :aggregator},
+      :aggregator,
       {:merge_processed_result, payload, receipt}
     )
 

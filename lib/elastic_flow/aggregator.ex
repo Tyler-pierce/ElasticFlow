@@ -1,18 +1,13 @@
 defmodule ElasticFlow.Aggregator do
-  @moduledoc """
-  A service that packs raw data to be distributed to sender/receiver services
-  """
+  @moduledoc false
 
   use GenServer
 
   alias ElasticFlow.Aggregation.Protocol, as: AggregationProtocol
 
 
-  @doc """
-  Start with a new empty activity bucket
-  """
   def start_link() do
-    GenServer.start_link(__MODULE__, :ok, name: {:global, :aggregator})
+    GenServer.start_link(__MODULE__, :ok, name: :aggregator)
   end
 
   def init(:ok) do  
@@ -22,7 +17,7 @@ defmodule ElasticFlow.Aggregator do
   # Client
   ##########################
   def retrieve_results() do
-    GenServer.call({:global, :aggregator}, :retrieve_results)
+    GenServer.call(:aggregator, :retrieve_results)
   end
 
   # Server

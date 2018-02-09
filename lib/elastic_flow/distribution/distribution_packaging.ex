@@ -1,7 +1,5 @@
 defmodule ElasticFlow.Distribution.Packaging do
-  @moduledoc """
-  Handles the logic governing packaging of distributable payloads
-  """
+  @moduledoc false
   alias ElasticFlow.Parcel
 
   @doc """

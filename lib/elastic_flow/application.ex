@@ -1,4 +1,5 @@
 defmodule ElasticFlow.Application do
+  @moduledoc false
   use Application
 
   alias ElasticFlow.Distribution.Servers, as: DistributionServers

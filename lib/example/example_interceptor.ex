@@ -1,4 +1,5 @@
 defmodule ElasticFlow.ExampleInterceptor do
+  @moduledoc false
   use ElasticFlow.Intercept
 
   def send(host_node, to, action, receipt) do

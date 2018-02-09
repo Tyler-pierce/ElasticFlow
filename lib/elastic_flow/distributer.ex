@@ -1,8 +1,5 @@
 defmodule ElasticFlow.Distributer do
-  @moduledoc """
-  A service that packs raw data to be distributed to sender service. Only called from
-  master node.
-  """
+  @moduledoc false
 
   use GenServer
 
@@ -10,10 +7,6 @@ defmodule ElasticFlow.Distributer do
   alias ElasticFlow.Distribution.Packaging, as: DistributionPackaging
   alias ElasticFlow.Distribution.Servers, as: DistributionServers
 
-
-  @doc """
-  Start with a new empty activity bucket
-  """
   def start_link() do
     GenServer.start_link(__MODULE__, :ok, name: :distributer)
   end
