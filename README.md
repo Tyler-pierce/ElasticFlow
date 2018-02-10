@@ -50,7 +50,7 @@ config :elastic_flow,
   compress: false # Optional (`true` does not currently work if your data includes type Tuple)
 ```
 
-## More About ES Bits and Pieces
+## More About EF Bits and Pieces
 
 ### Receipts
 
@@ -60,11 +60,15 @@ In the future, receipts are hoped to carry enough data to be able to determine a
 
 ### Distributer
 
-Run on the master node only; this takes the original data source, reads it into a Flow to distribute it via the master's sender to the clusters receivers.  In the future different distribution methods can be added.
+Run on the master node only; this takes the original data source, reads it into a Flow to distribute it via the master's sender to the clusters receivers.  In the future different distribution methods will be able to be added.  Currently some parts of the distribution Flow are customizable through configuration.
 
 ### Aggregator
 
 When processed data is returned to master, the aggregator runs an operation currently to countenance the data together as it arrives. The data needent be aggragated at all, if you only wish to record or emit a result for each piece or simply track when everything is completed.  There are default aggregate functions included in the protocol lib/elastic_flow/aggregation/aggregation_protocol.ex, which may work for some basic use cases.
+
+### Senders and Receivers
+
+Each node (master and slaves) have 1 sender and 1 receiver at the moment.  All data that transfers between nodes is funneled through and casted from these processes.  The sender will operate on data if necessary pre transfer, such as leaving out unnecessary info.  The receiver will decompress if necessary and trigger an action such as running the flow program or aggregating results.  Senders and receivers keep receipts of all throughput.
 
 ## Example
 
