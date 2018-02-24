@@ -3,7 +3,7 @@ defmodule ElasticFlow.Sender do
 
   use GenServer
 
-  alias ElasticFlow.Parcel
+  alias ElasticFlow.{Parcel, StepHandler}
   alias ElasticFlow.Distribution.Packaging, as: DistributionPackaging
   alias ElasticFlow.Distribution.Servers, as: DistributionServers
 
@@ -24,8 +24,9 @@ defmodule ElasticFlow.Sender do
     {:send_parcel_to_worker, %Parcel{receipt: receipt, payload: payload} = parcel, receiving_server}, 
     %{to_worker: worker_receipts} = receipts) do
 
+    %Parcel{compressed: compressed_payload} = DistributionPackaging.compress_payload(parcel)
+
     payload_send = if Application.get_env(:elastic_flow, :compress, true) do
-      %Parcel{compressed: compressed_payload} = DistributionPackaging.compress_payload(parcel)
       compressed_payload
     else
       payload
@@ -40,6 +41,12 @@ defmodule ElasticFlow.Sender do
       Application.get_env(:elastic_flow, :intercept, ElasticFlow.Interceptor), 
       :send, 
       [node(), receiving_server, :receive_new_parcel, receipt]
+    )
+
+    _ = apply(
+      Application.get_env(:elastic_flow, :persistance, ElasticFlow.Persistance.StepData), 
+      :save, 
+      [StepHandler.get_current_step_id(), receipt, compressed_payload]
     )
 
     {:noreply, %{receipts | :to_worker => [receipt|worker_receipts]}}

@@ -49,12 +49,7 @@ defmodule ElasticFlow.Distribution.Packaging do
     %Parcel{compressed: ..., ...}
   """
   def compress_payload(%Parcel{payload: payload} = parcel) do
-  	case Msgpax.pack(payload) do
-  	  {:ok, packed_payload} ->
-  	  	%{parcel | :compressed => packed_payload |> :zlib.compress()}
-  	  {:error, %Msgpax.PackError{reason: _reason}} ->
-  	    parcel
-  	end
+  	%{parcel | :compressed => :erlang.term_to_binary(payload, [{:compressed, 9}])}
   end
 
   @doc """
@@ -66,14 +61,7 @@ defmodule ElasticFlow.Distribution.Packaging do
     "foo"
   """
   def uncompress_payload(compressed_payload) do
-  	payload = :zlib.uncompress(compressed_payload)
-
-  	case Msgpax.unpack(payload) do
-  	  {:ok, unpacked_payload} ->
-  	  	unpacked_payload
-  	  {:error, %Msgpax.UnpackError{reason: _reason}} ->
-  	  	nil
-  	end
+  	:erlang.binary_to_term(compressed_payload)
   end
 
   defp get_hash_salt() do

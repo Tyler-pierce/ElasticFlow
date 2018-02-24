@@ -54,7 +54,7 @@ defmodule ElasticFlow.Receiver do
       received_payload
     end
 
-    _ = GenServer.cast(
+    _ = GenServer.call(
       :aggregator,
       {:merge_processed_result, payload, receipt}
     )

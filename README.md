@@ -52,6 +52,10 @@ config :elastic_flow,
 
 ## More About EF Bits and Pieces
 
+### Steps
+
+Jobs are organized as sequentially running steps.  When you add a step you are adding a run of your program to a queue.  If you continue to add jobs they will be queued up behind and run in order.  One step is running at a time and the next starts automatically when the previous is completed.
+
 ### Receipts
 
 At every step of the way (sending, receiving, aggregation, ..) receipts are left behind that can track specific portions of the work. These receipts are hashed together using the chunk of data's time of first conception, the amount of entries and the stage it came from. More importantly, they can be matched at any part of the journey from distribution to aggregation.  Receipt matching could in theory be used to keep a soft real-time track on what work is completed or failed after the program is finished running.
@@ -69,6 +73,11 @@ When processed data is returned to master, the aggregator runs an operation curr
 ### Senders and Receivers
 
 Each node (master and slaves) have 1 sender and 1 receiver at the moment.  All data that transfers between nodes is funneled through and casted from these processes.  The sender will operate on data if necessary pre transfer, such as leaving out unnecessary info.  The receiver will decompress if necessary and trigger an action such as running the flow program or aggregating results.  Senders and receivers keep receipts of all throughput.
+
+### Persistance
+
+A configurable and exchangable library takes care of saving compressed data to disk.  Saved files are organized by Step and named by the data's receipt that they represent.  This data is saved to be used later for retries.  
+
 
 ## Example
 
@@ -115,4 +124,15 @@ Let's run the example first! We can use the library on it's on before creating a
 
 And that's it.  Have a look through the example folder code. I'll continue to update it as features progress so each integration point is obvious.
 
-Cheers!
+Cheers! 
+
+
+## Last Release 0.0.2
+
+This section contains a list of updates from the last release.
+
+- any unfinished/errored work is now stored to disk for later replay
+
+- receipt's are now tracked with overridable heartbeat system
+
+- queue system now governs Step's, allowing steps to be run in sequence 

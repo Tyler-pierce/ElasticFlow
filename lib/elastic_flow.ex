@@ -85,7 +85,7 @@ defmodule ElasticFlow do
   <https://github.com/Tyler-pierce/ElasticFlow>
   """
 
-  alias ElasticFlow.{Parcel, Step, Distributer}
+  alias ElasticFlow.{Parcel, Step, Distributer, StepHandler}
 
   @doc """
   Add a work routine to the distributed system. Note this is a work in progress. Steps in the future will be designed to
@@ -96,10 +96,8 @@ defmodule ElasticFlow do
     iex> essay = File.stream!("lib/example/data/essay.txt")
     iex> ElasticFlow.create_step(essay) |> ElasticFlow.add_step()
   """
-  def add_step(%Step{enumerable_source: source}) do
-    source
-      |> Flow.from_enumerable()
-      |> distribute(Application.get_env(:elastic_flow, :distribute_options, []))
+  def add_step(%Step{} = step) do
+    StepHandler.add_step(step)
   end
 
   @doc """

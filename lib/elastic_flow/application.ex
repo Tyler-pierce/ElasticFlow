@@ -11,6 +11,7 @@ defmodule ElasticFlow.Application do
     children = case Map.get(Application.get_env(:elastic_flow, :servers), node()) do
       :master ->
         [
+          worker(ElasticFlow.StepHandler, []),
           worker(ElasticFlow.Distributer, []),
           worker(ElasticFlow.Aggregator, []),
           worker(ElasticFlow.Sender, [DistributionServers.get_sender_name_for_server()]),

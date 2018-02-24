@@ -12,7 +12,7 @@ defmodule ElasticFlow.Distributer do
   end
 
   def init(:ok) do
-    {:ok, %{receipts: [], servers: Map.keys(Application.get_env(:elastic_flow, :servers))}}
+    {:ok, %{receipts: [], task_count: 0, retry_count: 0, servers: Map.keys(Application.get_env(:elastic_flow, :servers))}}
   end
 
   # Client
@@ -25,9 +25,29 @@ defmodule ElasticFlow.Distributer do
     GenServer.call(:distributer, {:package_and_send, parcel})
   end
 
+  def get_task_count() do
+  	GenServer.call(:distributer, :task_count)
+  end
+
+  def get_retry_count() do
+  	GenServer.call(:distributer, :retry_count)
+  end
+
+  def retry_distribution(receipts) do
+  	GenServer.call(:distributer, {:retry_by_receipts, receipts})
+  end
+
   # Server
   ###########################
-  def handle_call({:package_and_send, parcel}, _from, %{servers: [next_server|servers], receipts: receipts} = state) do
+  def handle_call(:task_count, _from, %{task_count: task_count} = state) do
+  	{:reply, task_count, state}	
+  end
+
+  def handle_call(:retry_count, _from, %{retry_count: retry_count} = state) do
+  	{:reply, retry_count, state}	
+  end
+
+  def handle_call({:package_and_send, parcel}, _from, %{servers: [next_server|servers], receipts: receipts, task_count: task_count} = state) do
   	labeled_parcel = DistributionPackaging.create_receipt(parcel)
 
   	_ = GenServer.cast(
@@ -35,17 +55,24 @@ defmodule ElasticFlow.Distributer do
   	  {:send_parcel_to_worker, labeled_parcel, next_server}
   	)
 
-  	 _ = apply(
+  	_ = apply(
       Application.get_env(:elastic_flow, :intercept, ElasticFlow.Interceptor), 
       :distributed, 
-      [labeled_parcel.receipt]
+      [labeled_parcel.receipt, task_count + 1]
     )
 
   	# Add to unanswered receipt count and cycle the server to the back of the order.
-    {:reply, state, %{
-      receipts: [labeled_parcel.receipt|receipts],
-      servers: servers ++ [next_server]
+    {:reply, state, %{ state |
+      :receipts => [labeled_parcel.receipt|receipts],
+      :task_count => task_count + 1,
+      :servers => servers ++ [next_server]
     }}
+  end
+
+  def handle_call({:retry_by_receipts, _receipts}, _from, %{retry_count: retry_count} = state) do
+  	# DO WORK
+
+  	{:reply, state, %{state | :retry_count => retry_count + 1}}
   end
 
   def handle_info(_, state), do: {:noreply, state}
