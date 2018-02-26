@@ -62,8 +62,11 @@ defmodule ElasticFlow.Error.MonitorDistribution do
     sender_process = DistributionServers.get_sender_name_for_server(server)
     receiver_process = DistributionServers.get_sender_name_for_server(server)
 
+    sender_pid = :global.whereis_name(sender_process)
+    receiver_pid = :global.whereis_name(receiver_process)
+
     add_process_monitors(
-      [Process.monitor({:global, sender_process}), Process.monitor({:global, receiver_process})|refs],
+      [Process.monitor(sender_pid), Process.monitor(receiver_pid)|refs],
       servers)
   end
 end

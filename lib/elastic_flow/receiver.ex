@@ -6,6 +6,7 @@ defmodule ElasticFlow.Receiver do
   alias ElasticFlow.Parcel
   alias ElasticFlow.Distribution.Packaging, as: DistributionPackaging
   alias ElasticFlow.Distribution.Servers, as: DistributionServers
+  alias ElasticFlow.Error.SpiritsOfChaos
 
   
   def start_link(name) do
@@ -22,6 +23,8 @@ defmodule ElasticFlow.Receiver do
   # Server
   ##########################
   def handle_cast({:receive_new_parcel, received_payload, receipt}, %{from_master: master_receipts} = receipts) do
+
+    SpiritsOfChaos.call_spirit()
 
     payload = if Application.get_env(:elastic_flow, :compress, true) do
       DistributionPackaging.uncompress_payload(received_payload)

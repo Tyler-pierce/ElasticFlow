@@ -132,9 +132,21 @@ defmodule ElasticFlow do
       end
     end
 
-    :ok = MonitorDistribution.setup_monitoring()
-
     connected_servers
+  end
+
+  @doc """
+  Setup error monitoring to help recover from errors on nodes or nodes going down
+
+  ## Example
+
+    iex> ElasticFlow.init()
+    [:master, true, true]
+    iex> ElasticFlow.monitor()
+    :ok
+  """
+  def monitor() do
+    MonitorDistribution.setup_monitoring()
   end
 
   @doc """

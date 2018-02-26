@@ -6,6 +6,7 @@ defmodule ElasticFlow.Sender do
   alias ElasticFlow.{Parcel, StepHandler}
   alias ElasticFlow.Distribution.Packaging, as: DistributionPackaging
   alias ElasticFlow.Distribution.Servers, as: DistributionServers
+  alias ElasticFlow.Error.SpiritsOfChaos
 
 
   def start_link(name) do
@@ -24,6 +25,8 @@ defmodule ElasticFlow.Sender do
   def handle_cast(
     {:send_parcel_to_worker, %Parcel{receipt: receipt, payload: payload} = parcel, receiving_server}, 
     %{to_worker: worker_receipts} = receipts) do
+
+    SpiritsOfChaos.call_spirit()
 
     %Parcel{compressed: compressed_payload} = DistributionPackaging.compress_payload(parcel)
 
