@@ -11,7 +11,7 @@ defmodule ElasticFlow.StepHandler do
   end
 
   def init(:ok) do
-    {:ok, %{steps: :queue.new, statuses: []}}
+    {:ok, %{steps: :queue.new, statuses: [], error_count: 0}}
   end
 
   # Client
@@ -27,6 +27,14 @@ defmodule ElasticFlow.StepHandler do
 
   def play_step() do
   	GenServer.call(:step_handler, :play_step)
+  end
+
+  def increment_error_count() do
+  	GenServer.cast(:step_handler, :increment_error_count)
+  end
+
+  def get_error_count() do
+  	GenServer.call(:step_handler, :error_count)
   end
 
   def get_current_step_id() do
@@ -113,13 +121,13 @@ defmodule ElasticFlow.StepHandler do
   	  	end
 
   	  	try do
+  	  	  # Will expand supervisor tree to handle this without try/rescue
 	  	  :ok = flow
 	        |> ElasticFlow.distribute(Application.get_env(:elastic_flow, :distribute_options, []))
 
 	      {:ok, q, :in_progress}
         rescue
-          # TODO: write error to file system
-          RuntimeError -> {:error_distribution_flow, q, nil}
+          _ -> {:error_distribution_flow, q, nil}
         end
   	  {:empty, q} ->
   	  	{:no_steps, q, nil}
@@ -137,6 +145,14 @@ defmodule ElasticFlow.StepHandler do
 
   def handle_call(:results, _from, %{results: results} = state) do
   	{:reply, results, state}
+  end
+
+  def handle_call(:error_count, _from, %{error_count: error_count} = state) do
+  	{:reply, error_count, state}
+  end
+
+  def handle_cast(:increment_error_count, %{error_count: error_count} = state) do
+  	{:noreply, %{state | :error_count => error_count + 1}}
   end
 
   def handle_info(_, state), do: {:noreply, state}

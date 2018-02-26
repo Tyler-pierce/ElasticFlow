@@ -50,12 +50,12 @@ defmodule ElasticFlow.Distributer do
   def handle_call({:package_and_send, parcel}, _from, %{servers: [next_server|servers], receipts: receipts, task_count: task_count} = state) do
   	labeled_parcel = DistributionPackaging.create_receipt(parcel)
 
-  	_ = GenServer.cast(
+  	GenServer.cast(
   	  {:global, DistributionServers.get_sender_name_for_server()}, 
   	  {:send_parcel_to_worker, labeled_parcel, next_server}
   	)
 
-  	_ = apply(
+  	apply(
       Application.get_env(:elastic_flow, :intercept, ElasticFlow.Interceptor), 
       :distributed, 
       [labeled_parcel.receipt, task_count + 1]

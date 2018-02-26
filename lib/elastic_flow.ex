@@ -86,6 +86,7 @@ defmodule ElasticFlow do
   """
 
   alias ElasticFlow.{Parcel, Step, Distributer, StepHandler}
+  alias ElasticFlow.Error.MonitorDistribution
 
   @doc """
   Add a work routine to the distributed system. Note this is a work in progress. Steps in the future will be designed to
@@ -109,6 +110,31 @@ defmodule ElasticFlow do
   """
   def create_step(source) do
     %Step{enumerable_source: source}
+  end
+
+  @doc """
+  An initialization step that can be called to automatically connect the server nodes into a
+  cluster and setup appropriate monitoring for maximum error recovery/coverage.  In short it is
+  a recommended/common use setup. Returns a list of connection results for your server list.
+
+  ## Example
+
+    iex> ElasticFlow.init()
+    [:master, true, true]
+  """
+  def init() do
+    connected_servers = for key <- Map.keys(Application.get_env(:elastic_flow, :servers)) do
+      case Map.get(Application.get_env(:elastic_flow, :servers), key) do
+        :master ->
+          :master
+        _ ->
+          Node.connect key
+      end
+    end
+
+    :ok = MonitorDistribution.setup_monitoring()
+
+    connected_servers
   end
 
   @doc """

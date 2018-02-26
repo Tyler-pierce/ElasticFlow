@@ -2,8 +2,6 @@ defmodule ElasticFlow.Application do
   @moduledoc false
   use Application
 
-  alias ElasticFlow.Distribution.Servers, as: DistributionServers
-
 
   def start(_type, _args) do
     import Supervisor.Spec
@@ -14,13 +12,12 @@ defmodule ElasticFlow.Application do
           worker(ElasticFlow.StepHandler, []),
           worker(ElasticFlow.Distributer, []),
           worker(ElasticFlow.Aggregator, []),
-          worker(ElasticFlow.Sender, [DistributionServers.get_sender_name_for_server()]),
-          worker(ElasticFlow.Receiver, [DistributionServers.get_receiver_name_for_server()])
+          supervisor(ElasticFlow.SenderReceiverSupervisor, []),
+          worker(ElasticFlow.Error.MonitorDistribution, [])
         ]
       :slave ->
         [
-          worker(ElasticFlow.Sender, [DistributionServers.get_sender_name_for_server()]),
-          worker(ElasticFlow.Receiver, [DistributionServers.get_receiver_name_for_server()])
+          supervisor(ElasticFlow.SenderReceiverSupervisor, [])
         ]
     end
 

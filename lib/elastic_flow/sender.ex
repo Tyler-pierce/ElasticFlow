@@ -7,6 +7,7 @@ defmodule ElasticFlow.Sender do
   alias ElasticFlow.Distribution.Packaging, as: DistributionPackaging
   alias ElasticFlow.Distribution.Servers, as: DistributionServers
 
+
   def start_link(name) do
     GenServer.start_link(__MODULE__, :ok, name: {:global, name})
   end

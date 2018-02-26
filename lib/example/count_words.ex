@@ -22,14 +22,7 @@ defmodule ElasticFlow.Example do
   	IO.inspect "Connecting to nodes."
 
   	# Connect master with all slaves.  Will share info with slaves automatically
-  	for key <- Map.keys(Application.get_env(:elastic_flow, :servers)) do
-  	  case Map.get(Application.get_env(:elastic_flow, :servers), key) do
-  	  	:master ->
-  	  	  nil
-  	  	_ ->
-  	  	  Node.connect key
-  	  end
-  	end
+  	ElasticFlow.init()
   end
 
   @doc """
