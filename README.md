@@ -16,7 +16,7 @@ to get a feel for the BEAM and Elastic Flow.
 
 Scroll to the bottom if you wish to jump straight to an example.
 
-[Full Documentation](https://hexdocs.pm/elastic_flow/0.0.1/ElasticFlow.html)
+[Full Documentation](https://hexdocs.pm/elastic_flow/0.1.0/ElasticFlow.html)
 
 ## Installation
 
@@ -25,7 +25,7 @@ Add `elastic_flow` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:elastic_flow, "~> 0.0.1"}
+    {:elastic_flow, "~> 0.1.0"}
   ]
 end
 ```
