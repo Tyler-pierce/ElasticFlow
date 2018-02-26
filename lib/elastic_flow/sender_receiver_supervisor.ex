@@ -1,5 +1,6 @@
 defmodule ElasticFlow.SenderReceiverSupervisor do
-  # Automatically defines child_spec/1
+  @moduledoc false
+
   use Supervisor
 
   alias ElasticFlow.Distribution.Servers, as: DistributionServers

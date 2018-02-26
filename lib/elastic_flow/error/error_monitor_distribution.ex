@@ -1,4 +1,6 @@
 defmodule ElasticFlow.Error.MonitorDistribution do
+  @moduledoc false
+  
   use GenServer
 
   alias ElasticFlow.StepHandler
