@@ -76,7 +76,8 @@ defmodule ElasticFlow do
       %{"first" => 7, "whole" => 14, ... }
     ```
 
-  And that's it.  Have a look through the example folder code. I'll continue to update it as features progress so each integration point
+  And that's it.  If you wish to explore further try turning on the chaos_spirits option (from 1 to 45) to force errors, or adding longer jobs to try 
+  step queueing.  And have a look through the example folder code to see how you'd structure your app. I'll continue to update it as features progress so each integration point
   is obvious.
 
   Cheers!
@@ -110,6 +111,19 @@ defmodule ElasticFlow do
   """
   def create_step(source) do
     %Step{enumerable_source: source}
+  end
+
+  @doc """
+  Performs a retry on the last run step for any parcels that did not make it from distribution to 
+  aggregation.  Uses receipt matching to achieve this.
+
+  NOTE!! This is a placeholder. This feature is coming next release (0.1.1)
+
+    iex> ElasticFlow.retry_step()
+    .. (results) ..
+  """
+  def retry_step() do
+    :not_implemented
   end
 
   @doc """

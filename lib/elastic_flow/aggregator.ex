@@ -25,6 +25,10 @@ defmodule ElasticFlow.Aggregator do
     GenServer.call(:aggregator, :task_count)
   end
 
+  def get_receipts() do
+    GenServer.call(:aggregator, :receipts)
+  end
+
   # Server
   ##########################
   def handle_call(:retrieve_results, _from, %{results: results} = state) do
@@ -33,6 +37,10 @@ defmodule ElasticFlow.Aggregator do
 
   def handle_call(:task_count, _from, %{task_count: task_count} = state) do
     {:reply, task_count, state}
+  end
+
+  def handle_call(:receipts, _from, %{receipts: receipts} = state) do
+    {:reply, receipts, state}
   end
 
   def handle_call({:merge_processed_result, result, receipt}, _from, %{results: results, receipts: receipts, task_count: task_count} = state) do

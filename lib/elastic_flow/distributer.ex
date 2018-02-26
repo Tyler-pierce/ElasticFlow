@@ -37,6 +37,10 @@ defmodule ElasticFlow.Distributer do
   	GenServer.call(:distributer, {:retry_by_receipts, receipts})
   end
 
+  def get_receipts() do
+    GenServer.call(:distributer, :receipts)
+  end
+
   # Server
   ###########################
   def handle_call(:task_count, _from, %{task_count: task_count} = state) do
@@ -45,6 +49,10 @@ defmodule ElasticFlow.Distributer do
 
   def handle_call(:retry_count, _from, %{retry_count: retry_count} = state) do
   	{:reply, retry_count, state}	
+  end
+
+  def handle_call(:receipts, _from, %{receipts: receipts} = state) do
+    {:reply, receipts, state}
   end
 
   def handle_call({:package_and_send, parcel}, _from, %{servers: [next_server|servers], receipts: receipts, task_count: task_count} = state) do
